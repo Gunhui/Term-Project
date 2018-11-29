@@ -48,6 +48,10 @@ class BoardApplyController extends Controller
                 'applied_id' => $id,
             ]);   
 
+            $who = DB::table('boards')->where('id', $id)->value('writer');
+            $title = DB::table('boards')->where('id', $id)->value('content_title');
+            event(new \App\Events\StatusLiked($user, $who, $title));
+
             return redirect()->route('board.board')->with('Message', '신청에 성공하셨습니다.');
         }
     }

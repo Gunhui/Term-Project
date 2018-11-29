@@ -59,7 +59,7 @@
                     <tr>
                         <td><span class="glyphicon glyphicon-ok-circle"></span>&nbsp;<b>운영자</b></td>
                         <td><b>{{$notice->content_title}}</b></td>
-                        <td><b>{{$notice->regtime}}</b></td>
+                        <td><b>{{$notice->created_at}}</b></td>
                         <td><b>{{$notice->hits}}</b></td>
                     </tr>   
                   </tbody>
@@ -68,7 +68,7 @@
                     <tr>
                       <td>{{$notice->writer}}</td>
                       <td>{{$notice->content_title}}</td>
-                      <td>{{$notice->regtime}}</td>
+                      <td>{{$notice->created_at}}</td>
                       <td>{{$notice->hits}}</td>
                     </tr>   
                   </tbody>

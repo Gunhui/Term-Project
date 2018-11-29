@@ -21,14 +21,19 @@ Route::get('google_map', function(){
 
 Auth::routes();
 
+Route::get('action', 'Controller@Action');
+
 Route::get('/redirect', 'SocialAuthGoogleController@redirect');
 Route::get('/callback', 'SocialAuthGoogleController@callback');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::post('/boards', 'BoardController@store');
+Route::post('/notices', 'NoticesController@store');
 Route::post('/modify', 'BoardController@update');
 Route::post('/notices_modify', 'NoticesController@update');
+Route::get('/distance', 'Board_pageController@distance');
+Route::post('/search', 'Board_pageController@search');
 
 Route::get('board/board', ['as' => 'board.board', 'uses' => 'Board_pageController@index']);
 Route::get('board/home', ['as' => 'board.home', 'uses' => 'Home_pageController@index']);

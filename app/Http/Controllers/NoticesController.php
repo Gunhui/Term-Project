@@ -60,7 +60,7 @@ class NoticesController extends Controller
 
         return redirect('board/notices');
     }
-
+   
     /**
      * Display the specified resource.
      *

@@ -75,19 +75,6 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
-                            <label for="user_image" class="col-md-4 col-form-label text-md-right">{{ __('user_image') }}</label>
-        
-                            <div class="col-md-6">
-                                <input id="user_image" type="text" class="form-control{{ $errors->has('user_image') ? ' is-invalid' : '' }}" name="user_image" value="{{ old('user_image') }}" required>
-                                @if ($errors->has('user_image'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('user_image') }}</strong>
-                                     </span>
-                                @endif
-                            </div>
-                        </div>
-
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">

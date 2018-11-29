@@ -5,7 +5,7 @@
     <div class="container jumbotron">
             <h2>새 글쓰기 폼</h2>
             <p>아래의 모든 필드를 채워주세요. </p>
-            <form action="{{url('notices')}}" method="POST">
+            <form action="{{action('NoticesController@store')}}" method="POST">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="writer" value="{{ $user }}">
                 <div class="form-group">

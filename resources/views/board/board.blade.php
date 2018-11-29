@@ -4,7 +4,6 @@
   <div class="alert alert-success">{{ Session::get('Message') }}</div>
 @endif --}}
 
-
 @section('style')
   <style>
     /* Always set the map height explicitly to define the size of the div
@@ -23,7 +22,6 @@
 @endSection
 
 @section('content')
-
   <div class="col-lg-9">
         <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel">
           <ol class="carousel-indicators">
@@ -52,10 +50,40 @@
           </a>
         </div>
         <br>
-        <div class="row">
+            <form action="{{action('Board_pageController@distance')}}" method="get">
+                @csrf
+                <p id="demo" name="demo"></p>
+                <input type="hidden" id="lat" name="lat">
+                <input type="hidden" id="lng" name="lng">
+              
+                <script>
+                  var x = document.getElementById('demo');
+                  var lat = document.getElementById('lat');
+                  var lng = document.getElementById('lng');
+  
+                  $(document).ready(function getlocation(){
+                    if(navigator.geolocation){
+                      navigator.geolocation.getCurrentPosition(showPosition);
+                    }else{
+                      x.innerHTML = "Geolocation is not supported by this browser.";
+                    }
+                  });
+  
+                  function showPosition(position){
+                    lat.value = position.coords.latitude;
+                    lng.value = position.coords.longitude;
+                  }
+                </script>
+                  <select onchange="this.form.submit()">
+                    <option type="submit()">남은기간</option>
+                    <option type="submit">거리</option>
+                    {{-- <noscript><input type="submit" value="Submit"></noscript> --}}
+                  </select>
+              </form>
+          <div class="row">
           <?php $checking = 0; ?>
           <?php $count = 0; ?>
-            @foreach($boards as $board)
+            @foreach($boards as $board)   
             <div class="col-lg-4 col-md-6 mb-4" onclick="location.href='{{ URL::to('board_view/'.$board->id) }}'"> 
               <div class="card h-100">   
                 <div id="{{$checking}}" style="height:170px; weight=50px;"></div>
@@ -63,12 +91,12 @@
                       <h4 class="card-title">
                         <a> </a>
                       </h4>
-                      <h5><b>작성자</b> : {{$board->writer}}</h5>
+                      <h5><b>봉사 모집자</b> : {{$board->writer}}</h5>
+                      <br>
                       <h5><b>위치</b> : {{$board->content_loc}}</h5>
-                      <small id="apply"><b>신청 현황 : 명</b></small>
                     </div>
                   <div class="card-footer">
-                    <small class="text-muted">조횟수 : <?= $board->hits ?></small>
+                    <small class="text-muted" style="float:right;">조횟수 : <b><?= $board->hits ?></b></small>
                   </div>
               </div>              
             </div>
@@ -111,19 +139,25 @@
           <div class="row">
                 <div class="col-sm-6 col-sm-offset-3">
                     <div id="imaginary_container">
-                    <form action="<?= $_SERVER['PHP_SELF']; ?>" method="post"> 
-                        <div class="input-group stylish-input-group">
-                            <input type="text" class="form-control" name="search_content" placeholder="Enter any keyword">
-                            <span class="input-group-addon">
-                                <button type="submit">
-                                    <span class="glyphicon glyphicon-search"></span>
-                                </button>  
-                            </span>
-                        </div>
-                      </form>
+                    <form action="{{ action('Board_pageController@search') }}" method="post"> 
+                    @csrf
+                    <div class="input-group stylish-input-group" style="display: flex;">
+                      <select name="menu" style="border-radius:5px;"> 
+                        <option value="content_title">제목</option>
+                        <option value="content">내용</option>
+                        <option value="writer">글쓴이</option>
+                      </select>
+                      <input type="text" class="form-control" name="search_content" style="flex: 1;" placeholder="Enter any keyword">
+                      <div class="input-group-addon" style="width: 60px">
+                        <button type="submit">
+                          <span class="glyphicon glyphicon-search"></span>
+                        </button>  
+                      </div>
                     </div>
+                    </form>
+                  </div>
                 </div>
-          </div>
+            </div>
           </div>
 
         </div>

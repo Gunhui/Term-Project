@@ -23,6 +23,11 @@ class Board extends Model
     {
         $boards = App\Board::all();
     }
+
+    public function apply()
+    {
+        return $this->hasMany('App\Board_apply', 'apllied_id');
+    }
     
   
     /*
@@ -30,4 +35,6 @@ class Board extends Model
             $query = \App\Board::query();
             $query->where('document_srl', '=', '$args->document_srl);
     */
+
+  
 }

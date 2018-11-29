@@ -15,7 +15,6 @@ class AddColumnsToUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('addr', 200)->nullable();
-            $table->string('user_image', 200)->nullable();
         });
     }
 

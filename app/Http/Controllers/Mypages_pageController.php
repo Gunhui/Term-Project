@@ -23,10 +23,15 @@ class Mypages_pageController extends Controller
         
         $contents = DB::table('boards')->where('writer', $user)->get();
         $notices = DB::table('notices')->where('writer', $user)->get();
-        $applied_id = DB::table('board_applies')->where('user_id', $user)->value('applied_id');
-
-        $lists = DB::table('boards')->where('id', $applied_id)->get();
-        
+        $applied = DB::table('board_applies')->where('user_id', $user)->get();
+    
+        $lists = array();
+        $count = 0;
+        foreach($applied as $apply){
+            $lists[$count] = DB::table('boards')->where('id', $apply->applied_id)->get();
+            $count++;
+        }
+ 
 
         return view('board.mypage', ['master' => $master, 'users' => $users, 'contents' => $contents, 'notices' => $notices, 'lists' => $lists]);
     }

@@ -121,6 +121,6 @@ class BoardController extends Controller
         $board = Board::find($id);
         $board->delete();
 
-        return redirect()->route('board.board');
+        return redirect()->route('board.board'); 
     }
 }

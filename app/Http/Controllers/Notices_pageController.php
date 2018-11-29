@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Notices;
+use App\Notice_record;
 
 class Notices_pageController extends Controller
 {
@@ -57,9 +58,21 @@ class Notices_pageController extends Controller
     {
         $target = Notices::find($id);
         $contents = DB::table('notices')->where('id', $id)->get();
+        $hit = DB::table('notices')->where('id', $id)->value('hits');
+        $notice = Notices::find($id);
+
+        if(!DB::table('notice_records')->where('user_id', Auth::user()['name'])->where('num', $id)->value('user_id')){
+            $response = Notice_record::create([
+                'user_id' => Auth::user()['name'],
+                'num' => $id,
+            ]);
+
+            $notice->hits = $hit + 1;
+            $notice->save();
+        }
 
         return view('view.notices_view')->with('target', $target)
-                                      ->with('contents', $contents);
+                                      ->with('contents', $contents);          
     }
 
     /**
