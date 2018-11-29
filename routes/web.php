@@ -31,6 +31,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/boards', 'BoardController@store');
 Route::post('/notices', 'NoticesController@store');
 Route::post('/modify', 'BoardController@update');
+Route::post('/donate', 'Mypages_pageController@store');
+Route::post('/point', 'donationController@store');
 Route::post('/notices_modify', 'NoticesController@update');
 Route::get('/distance', 'Board_pageController@distance');
 Route::post('/search', 'Board_pageController@search');

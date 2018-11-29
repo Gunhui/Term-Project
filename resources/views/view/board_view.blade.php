@@ -70,20 +70,17 @@
                     </td>
                 </tr>
             </table>
-            <small id="apply" style="font-size:13px;"><b>신청 현황 : {{ $count }}명</b></small>            
+            <small id="apply"` style="font-size:13px;"><b>신청 현황 : {{ $count }}명</b></small>            
         </div>
         <div id="foot"style="padding-bottom:30px;">
             @if(Auth::check())
                 @if($content->writer != Auth::user()['name'])
-                    <input type="button" class="btn btn-light" style="margin-right:800px;" value="Apply" onclick="location.href='{{ URL::to('Apply/'.$content->id) }}'">
+                    <input type="button" class="btn btn-light" style="position:absolute; left:400px;" value="Apply" onclick="location.href='{{ URL::to('Apply/'.$content->id) }}'">
                 @endif
             @endif
             <input type="button" class="btn btn-primary" onclick="location.href='/board/board'"  value="목록보기">
             @if(Auth::check())
-                @if(Auth::user()['master'] == 1)
-                    <input type="button" class="btn btn-success" onclick="location.href='{{ URL::to('modify_form/'.$content->id) }}'" value="수정">
-                    <input type="button" class="btn btn-danger" onclick="location.href='{{ URL::to('board_destroy/'.$content->id) }}'" value="삭제">
-                @elseif($content->writer != Auth::user()['name'])
+                @if(Auth::user()['master'] == 1 && $content->writer == Auth::user()['name'])
                     <input type="button" class="btn btn-success" onclick="location.href='{{ URL::to('modify_form/'.$content->id) }}'" value="수정">
                     <input type="button" class="btn btn-danger" onclick="location.href='{{ URL::to('board_destroy/'.$content->id) }}'" value="삭제">
                 @endif

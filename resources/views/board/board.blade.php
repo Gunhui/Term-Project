@@ -74,17 +74,26 @@
                     lng.value = position.coords.longitude;
                   }
                 </script>
-                  <select onchange="this.form.submit()">
-                    <option type="submit()">남은기간</option>
-                    <option type="submit">거리</option>
+                  <select name="list" onchange="this.form.submit()">
+                    @if($check == 1)
+                      <option value="1" selected>등록순</option>
+                      <option value="2">거리</option>
+                    @else
+                      <option value="1">등록순</option>
+                      <option value="2" selected>거리</option>
+                    @endif 
                     {{-- <noscript><input type="submit" value="Submit"></noscript> --}}
                   </select>
               </form>
           <div class="row">
           <?php $checking = 0; ?>
           <?php $count = 0; ?>
-            @foreach($boards as $board)   
+            @foreach($boards as $board)
+            @if($board->execute_date >= Carbon\Carbon::now())   
             <div class="col-lg-4 col-md-6 mb-4" onclick="location.href='{{ URL::to('board_view/'.$board->id) }}'"> 
+            @else
+            <div class="col-lg-4 col-md-6 mb-4"> 
+            @endif
               <div class="card h-100">   
                 <div id="{{$checking}}" style="height:170px; weight=50px;"></div>
                     <div class="card-body">
@@ -95,7 +104,10 @@
                       <br>
                       <h5><b>위치</b> : {{$board->content_loc}}</h5>
                     </div>
-                  <div class="card-footer">
+                  <div class="card-footer" style="color:red;">
+                  @if($board->execute_date < Carbon\Carbon::now())
+                    <small style="float:left;">이미 끝남</small>
+                  @endif
                     <small class="text-muted" style="float:right;">조횟수 : <b><?= $board->hits ?></b></small>
                   </div>
               </div>              

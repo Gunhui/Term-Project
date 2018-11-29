@@ -7,7 +7,6 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <?php use Illuminate\Support\Facades\Auth; ?>
-    
     <!-- Bootstrap core CSS -->
     <link href="{{URL::to('/')}}/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     
@@ -25,16 +24,106 @@
     @yield('script')
     @yield('style')
     <style>
-     
       .dropdown-toggle::after{
         display:none;
       }
       .nav .open>a, .nav .open>a:focus, .nav .open>a:hover{
         background-color: transparent;
       }
+      #box{
+        position : fixed;
+        bottom:6%;
+        left:3%;
+        z-index: 1;
+      }
+      #btn{
+        background: none;
+        border:0;
+        outline:0;
+        position:relative;
+        background-size:cover;
+      }
+      .content{
+        position:absolute;
+        top:75%;
+        left:50%;
+        font-size:33px;
+        z-index:2;
+        text-align:center;
+        transform:translate(-50%, -50%);
+      }
     </style>
   </head>
   <body>
+    <div class="box" id="box">
+      @if(Auth::check())
+        <button id="btn" type="button" data-toggle="modal" data-target="#input"><img src="{{URL::to('/')}}/img/donate.png" height="256" width="256"><span class="content">POINT<br><span id="all_point" style="color:red;">{{ $all_point }}</span></span></button>
+      @else
+      <button id="btn" type="button"><img src="{{URL::to('/')}}/img/donate.png" height="256" width="256"></span></button>
+      @endif
+      </div>
+      <div id="input" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Donate</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <h4><span class="glyphicon glyphicon-chevron-right"></span> 지금까지 모인 기부 Point  <span style="float:right"><b>{{ $all_point }}</b> point</span></h4>
+            @if(Auth::user()['master'] != 1)
+              <h4><span class="glyphicon glyphicon-chevron-right"></span> 내가 지금까지 기부한 Point  <span style="float:right"><b>{{ $my_point }}</b> Point</span></h4>
+              <h4><span class="glyphicon glyphicon-chevron-right"></span> 기부금 순위</h4>
+              <ol style="font-size:17px; margin-left:30px;">
+                <li>{{$point_list[0]->user_id}}  /   {{$point_list[0]->points}} Point</li>
+                <li>{{$point_list[1]->user_id}}  /   {{$point_list[1]->points}} Point</li>
+                <li>{{$point_list[2]->user_id}}  /   {{$point_list[2]->points}} Point</li>
+              </ol>
+            @else
+              <h4><span class="glyphicon glyphicon-chevron-right"></span> 기부금 목록</h4>
+              <ol style="font-size:17px; margin-left:30px;">
+                @foreach($point_list as $pl)
+                  <li>{{$pl->user_id}}  /   {{$pl->points}} Point</li>
+                @endforeach
+              </ol>
+            @endif
+            </div>
+            <div class="modal-footer">
+              @if(Auth::user()['master'] != 1)
+              <form action="{{ action('donationController@store') }}" method="post" style="width:600px;">
+                @csrf
+                <div style="float:left;">
+                  <input style="width:60px;" type="number" max="{{Auth::user()['point']}}" min="1" id="point" name="point" placeholder=" 최대 {{Auth::user()['point']}}"> Point
+                </div>
+                  @if(Auth::user()['point'] == 0)
+                  <button class="btn btn-danger" type="button">후원불가</button>
+                @else
+                  <button type="submit" style="float:right;" class="btn btn-success" id="donate">후원하기</button>
+                @endif
+              </form>
+              @endif
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <script src="//js.pusher.com/3.1/pusher.min.js"></script>
+      
+      
+      <script type="text/javascript">
+        var pusher2 = new Pusher('9228cfeec815f0e38b8c', {
+          cluster:'ap1',
+          encrypted: true
+        });
+        // Subscribe to the channel we specified in our Laravel Event
+        var channel = pusher2.subscribe('donate-online');
+        // Bind a function to a Event (the full Laravel class)
+        channel.bind('App\\Events\\donate_online', function(data) {
+          var ap = document.getElementById('all_point');
+          ap.innerHTML = data.all_point;         
+        });
+      </script>
+
     <!-- Navigation -->
     <nav class="navbar navbar-inverse">
       <div class="container">
@@ -46,9 +135,10 @@
               <div class="navbar-brand" style="display: flex;">
               @if(Auth::check())
                 @if($master == 1)
-                  <label id="id">{{Auth::user()['name']}}님</label>
+                <label id="id">{{Auth::user()['name']}}님</label>
                 @else
                   <label id="id">{{Auth::user()['name']}}님</label>
+                  &nbsp;<label>Point : {{Auth::user()['point']}}</label>
                 @endif
                 &nbsp;
               

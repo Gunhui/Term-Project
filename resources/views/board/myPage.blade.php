@@ -5,6 +5,18 @@
     .row{
       height:1200px;
     }
+    .starR{
+        background: url('http://miuu227.godohosting.com/images/icon/ico_review.png') no-repeat right 0;
+        background-size: auto 100%;
+        width: 30px;
+        height: 30px;
+        display: inline-block;
+        text-indent: -9999px;
+        cursor: pointer;
+    }
+    .starR.on{
+        background-position:0 0;
+    }
   </style>
 @endSection
 
@@ -37,7 +49,11 @@
             @else
                 <br><br><br>
                 <h1><b>내가 올린 봉사 모집글</b></h1>
-                <br><br>
+                <br>
+                <div style="float:right; margin-bottom:5px;">
+                    <img src="{{URL::to('/')}}/img/blue.png" height="15" width="50"> :
+                    봉사자 평가 가능
+                </div>
                     <table class="table table-hover">
                         <thead class="thead-dark">
                             <tr>
@@ -47,15 +63,81 @@
                                 <th>hits</th>
                             </tr>
                         </thead>
+                    <?php $counting = 0; ?>
                     @foreach($contents as $content)
-                        <tbody>
-                        <tr>
-                            <td>{{ $content->content_title }}</td>
+                    <?php $confirm = DB::table('board_applies')->where('applied_id', $content->id)->value('id'); ?> 
+                        @if($content->execute_date < Carbon\Carbon::now() && $confirm)
+                            @if($content->give_point == 0)
+                                <tbody data-toggle="modal" data-target="#{{$content->id}}" class="list-group-item-info">
+                            @endif
+                            <tr>
+                                <td>
+                                    {{ $content->content_title }}
+                                </td>
+                                <!-- modal -->
+                                <div id="{{$content->id}}" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                <h4 class="modal-title"><b>"{{ $content->content_title }}"</b>의 봉사 결과</h4>
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                </div>
+                                                <?php
+                                                    if($confirm) {
+                                                        $did_list = DB::table('board_applies')->where('applied_id', $content->id)->get();
+                                                    }
+                                                ?>
+                                                <form action="{{ action('Mypages_pageController@store') }}" method="post">
+                                                    @csrf
+                                                    <div class="modal-body">
+                                                    @if($confirm)
+                                                    <?php $counting2 = 0; ?>
+                                                        @foreach($did_list as $list)
+                                                            <ul>
+                                                                <li>
+                                                                    {{ $list->user_id }}
+                                                                    <div class="starRev{{$counting2}}">
+                                                                        <span id="1" class="starR on">별1</span>
+                                                                        <span id="2" class="starR">별2</span>
+                                                                        <span id="3" class="starR">별3</span>
+                                                                        <span id="4" class="starR">별4</span>
+                                                                        <span id="5" class="starR">별5</span>
+                                                                    </div>
+                                                                    <input type="hidden" name="name[{{ $counting2 }}]" value="{{ $list->user_id }}">
+                                                                    <input type="hidden" name="val[{{$counting2}}]" id="text{{$counting2}}">   
+                                                                    <input type="hidden" name="boards[{{$counting2}}]" value="{{$list->applied_id}}">            
+                                                                    <script>
+                                                                        $('.starRev{{$counting2}} span').click(function(){                                                                            
+                                                                            $(this).parent().children('span').removeClass('on');
+                                                                            $(this).addClass('on').prevAll('span').addClass('on');
+                                                                            var score = $(this).attr('id');
+                                                                            var test = document.getElementById('text{{$counting2}}');
+                                                                            test.value = score;
+                                                                            return false;                                                                        
+                                                                        });
+                                                                    </script>                                        
+                                                                </li><br>
+                                                            </ul>
+                                                            <?php $counting2++; ?>
+                                                        @endforeach
+                                                    @endif
+                                                    <div class="modal-footer">
+                                                        <button type="submit" class="btn btn-primary" onclick="getScore">별점주기</button>
+                                                    </div>
+                                                </div>
+                                                </form>
+                                            </div><!-- /.modal-content -->
+                                        </div><!-- /.modal-dialog -->
+                                    </div><!-- /.modal -->
+                            @else
+                                <td>{{ $content->content_title }}</td>
+                            @endif
                             <td>{{ $content->content_loc }}</td>
                             <td>{{ $content->execute_date }}</td>
                             <td>{{ $content->hits }}</td>
                         </tr>   
                         </tbody>
+                        <?php $counting++; ?>
                     @endforeach      
                     </table>
                     <br><br><hr><br><br>
@@ -70,7 +152,7 @@
         
                             </tr>
                         </thead>
-                    @if($notices != [])
+                    @if($notices != "empty")
                         @foreach($notices as $notice)
                             <tbody>
                             <tr>
@@ -109,4 +191,18 @@
                     </table>
                     @endif
                 @endif
+<script>
+    function getScore(){
+        var tags = [];
+        var score = 0;
+        for(var i = 0; i<4; i++){
+            tags[i] = document.getElementById(i);
+            if(tags[i].className=="starR on"){
+                score++;
+            }
+        }
+        alert(score);
+    }
+</script>
+               
 @endSection

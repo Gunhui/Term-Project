@@ -30,7 +30,7 @@ class Board extends Model
     }
     
   
-    /*
+    /*              
         example
             $query = \App\Board::query();
             $query->where('document_srl', '=', '$args->document_srl);

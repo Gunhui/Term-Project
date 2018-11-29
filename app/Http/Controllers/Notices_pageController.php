@@ -21,9 +21,12 @@ class Notices_pageController extends Controller
         $master = DB::table('users')->where('email', Auth::user()['email'])->value('master');
         $order = 'desc';
 
-        $notices = DB::table('notices')->orderBy('master',$order)->paginate(7);     
+        $notices = DB::table('notices')->orderBy('master',$order)->paginate(7);  
+        $my_point = DB::table('donations')->where('user_id', Auth::user()['name'])->sum('point');   
+        $all_point = DB::table('donations')->sum('point');
+        $point_list = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->get();
         
-        return view('board.notices', ['user' => $user, 'master' => $master, 'notices' => $notices]);
+        return view('board.notices', ['point_list' => $point_list ,'user' => $user, 'master' => $master, 'notices' => $notices, 'my_point' => $my_point, 'all_point' => $all_point]);
     }
 
     /**
@@ -60,6 +63,7 @@ class Notices_pageController extends Controller
         $contents = DB::table('notices')->where('id', $id)->get();
         $hit = DB::table('notices')->where('id', $id)->value('hits');
         $notice = Notices::find($id);
+        $all_point = DB::table('donations')->sum('point');
 
         if(!DB::table('notice_records')->where('user_id', Auth::user()['name'])->where('num', $id)->value('user_id')){
             $response = Notice_record::create([
@@ -72,7 +76,8 @@ class Notices_pageController extends Controller
         }
 
         return view('view.notices_view')->with('target', $target)
-                                      ->with('contents', $contents);          
+                                      ->with('contents', $contents)
+                                      ->with('all_point', $all_point);          
     }
 
     /**

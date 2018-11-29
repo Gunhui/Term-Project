@@ -23,14 +23,17 @@ class Board_pageController extends Controller
         $user = Auth::user()['name'];
         $img = Auth::user()['user_image'];
         $master = DB::table('users')->where('email', Auth::user()['email'])->value('master');
-
+        $check = 1;
+        $all_point = DB::table('donations')->sum('point');
+        // $boards = DB::table('boards')->where('execute_date', '>', \Carbon\Carbon::now())->orderBy('execute_date', 'desc')->paginate(6);
         $boards = DB::table('boards')->orderBy('execute_date', 'desc')->paginate(6);
-
-        // $apply_count = DB::table('board_applies')
-        //                 ->join('boards', 'id', '=', 'boards.id')
-        //                 ->join('');
+        $point_list = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->get();
         
-        return view('board.board', ['user' => $user, 'master' => $master, 'img' => $img, 'boards' => $boards]);
+        // $records = DB::table('donations')->
+
+        $my_point = DB::table('donations')->where('user_id', Auth::user()['name'])->sum('point');
+        
+        return view('board.board', ['point_list' => $point_list ,'user' => $user, 'master' => $master, 'img' => $img, 'boards' => $boards, 'check' => $check, 'all_point' => $all_point, 'my_point' => $my_point]);
     }
     
     /**
@@ -132,6 +135,7 @@ class Board_pageController extends Controller
         $column = $request->menu;
         $value = $request->search_content;
         $contents = DB::table('boards')->where($column, $value)->paginate(6);
+        return $contents;
 
         if($column && $value && $contents){
             return view('board.board', ['user' => $user, 'master' => $master, 'img' => $img, 'boards' => $contents]);
@@ -143,9 +147,14 @@ class Board_pageController extends Controller
 
     public function distance(Request $request)
     {
-        
+        if($request->list == 1){
+            return redirect()->route('board.board');
+        }
         
         $contents = DB::table('boards')->get();
+        $all_point = DB::table('donations')->sum('point');
+        $my_point = DB::table('donations')->where('user_id', Auth::user()['name'])->sum('point');
+        $point_list = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->get();
         $min = 0;
         $list = array();
         $count = 0;
@@ -178,12 +187,20 @@ class Board_pageController extends Controller
             $lat2 = $request->lat;
             $lng2 = $request->lng;
 
-            $earth_radius = 6371;
-            $dLat = deg2rad($lat2 - $lat1);
-            $dLon = deg2rad($lng2 - $lng1);
-            $a = sin($dLat/2) * sin($dLat/2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon/2) * sin($dLon/2);
-            $c = 2 * asin(sqrt($a));
-            $distance = $earth_radius * $c;
+            // $earth_radius = 6371;
+            // $dLat = deg2rad($lat2 - $lat1);
+            // $dLon = deg2rad($lng2 - $lng1);
+            // $a = sin($dLat/2) * sin($dLat/2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon/2) * sin($dLon/2);
+            // $c = 2 * asin(sqrt($a));
+            // $distance = $earth_radius * $c;
+
+            $theta = $lng1 - $lng2;
+            $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+            $dist = acos($dist);
+            $dist = rad2deg($dist);
+            $miles = $dist * 60 * 1.1515;
+
+            $distance = ($miles * 1.609344);
             
             $list[$count][0] = $distance;
             $list[$count][1] = $content->id;
@@ -198,7 +215,8 @@ class Board_pageController extends Controller
                 }
             }
         }
-
+ 
+        $check = 2;
         $user = Auth::user()['name'];                                                        
         $img = Auth::user()['user_image'];
         $master = DB::table('users')->where('email', Auth::user()['email'])->value('master');        
@@ -207,8 +225,8 @@ class Board_pageController extends Controller
         for($i = 0; $i < count($list); $i++){
             $rcm = Board::where('id', $list[$i][1])->first();
             $recommended[$i] = $rcm; 
-        }        
-
+        }
+    
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
  
         // Create a new Laravel collection from the array data
@@ -226,7 +244,7 @@ class Board_pageController extends Controller
         // set url path for generted links
         $paginatedItems->setPath($request->url());
 
-       // return view('board.board', ['user' => $user, 'master' => $master, 'img' => $img, 'boards' => $boards, 'recommended' => $recommended]);
-       return view('board.board', ['user' => $user, 'master' => $master, 'img' => $img, 'boards' => $paginatedItems]);
+       
+       return view('board.board', ['my_point' =>$my_point ,'all_point' => $all_point, 'user' => $user, 'master' => $master, 'img' => $img, 'boards' => $paginatedItems, 'check' => $check, 'point_list' =>$point_list]);
     }
 }

@@ -43,6 +43,10 @@
         <br>
         <h1><b>공지사항</b></h1>
         <br>
+        <div style="float:right; margin-bottom:5px;">
+            <img src="{{URL::to('/')}}/img/blue.png" height="15" width="50"> :
+            운영자 공지사항
+        </div>
         <div id="table1">
         <table class="table table-hover">
           <thead class="thead-dark">
