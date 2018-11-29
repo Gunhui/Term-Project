@@ -2,6 +2,7 @@
 
 @section('script')
     <script src="{{URL::to('/')}}/ckeditor/ckeditor.js"></script>
+    
     <script>
         function open_maps(){
             window.open("google_map", "", "width=700, height=500");
@@ -12,7 +13,7 @@
 @section('content')
     <div class="container">
         <div class="jumbotron">
-            <form action="{{ action('BoardController@store') }}" method="POST">
+            <form action="{{ action('BoardController@store') }}" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <div class="form-group">
                     <label for="title">Title</label>
@@ -41,6 +42,53 @@
                                  });
                         </script>
                 </div>
+                <div>
+                    
+                </div>
+                <script type="text/javascript">
+                    Dropzone.options.dropzone =
+                     {
+                        maxFilesize: 12,
+                        renameFile: function(file) {
+                            var dt = new Date();
+                            var time = dt.getTime();
+                           return time+file.name;
+                        },
+                        acceptedFiles: ".jpeg,.jpg,.png,.gif",
+                        addRemoveLinks: true,
+                        timeout: 50000,
+                        removedfile: function(file) 
+                        {
+                            var name = file.upload.filename;
+                            $.ajax({
+                                headers: {
+                                            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                                        },
+                                type: 'POST',
+                                url: '{{ url("image/delete") }}',
+                                data: {filename: name},
+                                success: function (data){
+                                    console.log("File has been successfully removed!!");
+                                },
+                                error: function(e) {
+                                    console.log(e);
+                                }});
+                                var fileRef;
+                                return (fileRef = file.previewElement) != null ? 
+                                fileRef.parentNode.removeChild(file.previewElement) : void 0;
+                        },
+                   
+                        success: function(file, response) 
+                        {
+                            console.log(response);
+                        },
+                        error: function(file, response)
+                        {
+                           return false;
+                        }
+                    };
+                </script>
+
                 <button type="submit" class="btn btn-primary">Submit</button>
                 <input type="button" class="btn btn-success" onclick="location.href='{{url('board')}}'" value="목록보기">
             </form>
