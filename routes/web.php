@@ -39,7 +39,7 @@ Route::post('/search', 'Board_pageController@search');
 
 Route::get('board/board', ['as' => 'board.board', 'uses' => 'Board_pageController@index']);
 Route::get('board/home', ['as' => 'board.home', 'uses' => 'Home_pageController@index']);
-Route::get('board/notices', ['as' => 'board.notices', 'uses' => 'Notices_pageController@index']);
+Route::get('board/notices', ['as' => 'board.notices', 'uses' => 'Notices_pageController@index'])->middleware('auth');
 Route::get('board/mypage', ['as' => 'board.mypage', 'uses' => 'Mypages_pageController@index']);
 Route::get('board/register', ['as' => 'board.register', 'uses' => 'RegisterController@']);
 Route::get('board/view', ['as' => 'board.view', 'uses' => 'Board_viewController@index']);
@@ -59,3 +59,8 @@ Route::get('board_write', 'Board_pageController@create');
 
 Route::get('/board_page', 'Board_pageController@index');
 Route::get('oauth', 'GoogleUserController@index');
+
+// Route::get('/email', ['as' => 'user.email', 'uses' => 'UsersController@email']);
+Route::post('/email', 'UsersController@email');
+Route::post('/check', 'UsersController@email_check');
+Route::post('/name_check', 'UsersController@name_check');

@@ -32,11 +32,13 @@ class Mypages_pageController extends Controller
 
         $lists = array();
         $count = 0;
+        
         foreach($applied as $apply){
-            $lists[$count] = DB::table('boards')->where('id', $apply->applied_id)->get();
+            // $lists[$count] = DB::table('boards')->where('id', $apply->applied_id)->get();
+            $lists[$count] = Board::where('id', $apply->applied_id)->first();
             $count++;
         }
-
+        
         $is_empty = DB::table('notices')->where('writer', $user)->value('id');
         if(!$is_empty){
             $notices = 'empty';

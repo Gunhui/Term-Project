@@ -181,17 +181,17 @@
                     @foreach($lists as $list)
                         <tbody>
                         <tr>
-                            <td>{{ $list[0]->content_title }}</td>
-                            <td>{{ $list[0]->content_loc }}</td>
-                            <td>{{ $list[0]->writer }}</td>
-                            <td>{{ $list[0]->hits }}</td>
+                            <td>{{ $list->content_title }}</td>
+                            <td>{{ $list->content_loc }}</td>
+                            <td>{{ $list->writer }}</td>
+                            <td>{{ $list->hits }}</td>
                         </tr>   
                         </tbody>   
                     @endforeach
                     </table>
                     @endif
                 @endif
-<script>
+{{-- <script>
     function getScore(){
         var tags = [];
         var score = 0;
@@ -203,6 +203,6 @@
         }
         alert(score);
     }
-</script>
+</script> --}}
                
 @endSection

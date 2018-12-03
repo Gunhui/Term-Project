@@ -48,6 +48,24 @@ class LoginController extends Controller
         }
     }
 
+    public function store(Request $request){
+        $this->validate($request, [
+            'email' => 'required|email',
+            'password' => 'required|min:6',
+        ]);
+
+        $confirm = DB::table('users')->where('email', $request->email)->value('activated');
+        if($confirm != 1){
+            return back()->with('message', '본인의 메일에서 인증해주세요.');
+        }
+
+        if(!auth()->attempt($request->only('email', 'password'), $request->has('remember'))){
+            return back()->withInput();
+        }
+
+        return redirect()->intended('dashboard');
+    }
+
     public function logout()
     {
         Auth::logout();

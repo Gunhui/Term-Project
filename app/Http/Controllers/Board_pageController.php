@@ -24,12 +24,12 @@ class Board_pageController extends Controller
         $img = Auth::user()['user_image'];
         $master = DB::table('users')->where('email', Auth::user()['email'])->value('master');
         $check = 1;
-        $all_point = DB::table('donations')->sum('point');
+        
         // $boards = DB::table('boards')->where('execute_date', '>', \Carbon\Carbon::now())->orderBy('execute_date', 'desc')->paginate(6);
         $boards = DB::table('boards')->orderBy('execute_date', 'desc')->paginate(6);
         $point_list = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->get();
         
-        // $records = DB::table('donations')->
+        $all_point = DB::table('donations')->sum('point');
 
         $my_point = DB::table('donations')->where('user_id', Auth::user()['name'])->sum('point');
         
@@ -131,14 +131,18 @@ class Board_pageController extends Controller
         $user = Auth::user()['name'];
         $img = Auth::user()['user_image'];
         $master = DB::table('users')->where('email', Auth::user()['email'])->value('master');
-
+        $check = 1;
         $column = $request->menu;
         $value = $request->search_content;
-        $contents = DB::table('boards')->where($column, $value)->paginate(6);
-        return $contents;
+        $contents = DB::table('boards')->where($column, $value)->paginate(6); 
+        $point_list = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->get();
+        
+        $all_point = DB::table('donations')->sum('point');
+
+        $my_point = DB::table('donations')->where('user_id', Auth::user()['name'])->sum('point');
 
         if($column && $value && $contents){
-            return view('board.board', ['user' => $user, 'master' => $master, 'img' => $img, 'boards' => $contents]);
+            return view('board.board', ['my_point' => $my_point ,'point_list' => $point_list ,'all_point' => $all_point ,'check' => $check ,'user' => $user, 'master' => $master, 'img' => $img, 'boards' => $contents]);
         }else{
             return redirect()->route('board.board');
         }

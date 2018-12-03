@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Users;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
+ 
 class UsersController extends Controller
 {
     /**
@@ -50,6 +52,41 @@ class UsersController extends Controller
     public function show(Users $users)
     {
         //
+    }
+
+    public function email(Request $request)
+    {
+        $confirmCode = str_random(5);
+        $request->confirm_code = $confirmCode;
+        \Mail::send('emails.auth.confirm', compact('request'), function($message) use($request){
+            $message->to($request->mail);
+            $message->subject('회원가입 확인');
+            
+        });
+
+        return $confirmCode;
+        
+        // return redirect()->route('register')->with('message', '메일에 날라간 인증확인을 부탁드립니다.')
+        //              ->with('mail_check', 1);
+    }
+
+    public function email_check(Request $request)
+    {
+        if($request->code == $request->confirmCode){
+            return "ok";
+        }
+        return $request->code; 
+    }
+
+    public function name_check(Request $request)
+    {
+        
+        $name = DB::table('users')->where('name', $request->name)->value('name');
+        if($name){
+            return "name";
+        }
+        
+        return "no";
     }
 
     /**
