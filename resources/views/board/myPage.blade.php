@@ -22,7 +22,7 @@
 
 @section('content')
 <div class="col-lg-9">
-        @if(Auth::check())
+        
             @if($master == 1)
                 <br><br><br><br><br><br><br><br>
                 <h1><b>모든 회원정보 보기</b></h1>
@@ -190,7 +190,7 @@
                     @endforeach
                     </table>
                     @endif
-                @endif
+                
 {{-- <script>
     function getScore(){
         var tags = [];

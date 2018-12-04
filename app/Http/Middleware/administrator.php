@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Middleware;
-use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Auth;
 use Closure;
 
-class Owner
+class administrator
 {
     /**
      * Handle an incoming request.
@@ -17,8 +17,12 @@ class Owner
     public function handle($request, Closure $next)
     {
         if(Auth::check()){
-            return $next($request);
+            if(Auth::user()['master'] != 1){
+                return $next($request);
+            }else{
+                return redirect()->route('board.mypage');
+            }
         }
-        return redirect()->route('board.board')->with('error', '로그인 이후 사용 가능합니다.');
+        return redirect()->route('board.board');
     }
 }

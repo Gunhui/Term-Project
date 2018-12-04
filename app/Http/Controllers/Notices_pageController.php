@@ -21,7 +21,7 @@ class Notices_pageController extends Controller
         $master = DB::table('users')->where('email', Auth::user()['email'])->value('master');
         $order = 'desc';
 
-        $notices = DB::table('notices')->orderBy('master',$order)->paginate(7);  
+        $notices = DB::table('notices')->orderBy('master',$order)->orderBy('created_at', 'desc')->paginate(7);  
         $my_point = DB::table('donations')->where('user_id', Auth::user()['name'])->sum('point');   
         $all_point = DB::table('donations')->sum('point');
         $point_list = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->get();

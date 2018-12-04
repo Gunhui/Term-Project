@@ -32,7 +32,7 @@
                 </tr>
                 <tr>
                     <th>내용</th>
-                    <td><?= $content->content ?></td>
+                    <td>{!! $content->content !!}</td>
                 </tr>
                 <tr>
                     <th>장소</th>

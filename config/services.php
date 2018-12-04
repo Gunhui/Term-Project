@@ -38,6 +38,6 @@ return [
     'google' => [
         'client_id' => '488886135548-v6t87hsi6ohi2i3qkcrab1pk41gk83bi.apps.googleusercontent.com',
         'client_secret' => 'qua3H8VlBuvExmhX2b7wKgYO',
-        'redirect' => 'http://gunny.site/callback',
+        'redirect' => 'http://www.gunny.site/callback',
     ],
 ];

@@ -1,18 +1,11 @@
 @extends('layouts.master')
 
-{{-- @if(Session::has('Message'))
-  <div class="alert alert-success">{{ Session::get('Message') }}</div>
-@endif --}}
-
 @section('style')
   <style>
-    /* Always set the map height explicitly to define the size of the div
-     * element that contains the map. */
     #map {
       height: 170px;
       weight: 70px;
     }
-    /* Optional: Makes the sample page fill the window. */
     html, body {
       height: 100%;
       margin: 0;
@@ -106,7 +99,7 @@
                     </div>
                   <div class="card-footer" style="color:red;">
                   @if($board->execute_date < Carbon\Carbon::now())
-                    <small style="float:left;">이미 끝남</small>
+                    <small style="float:left;">모집 마감</small>
                   @endif
                     <small class="text-muted" style="float:right;">조횟수 : <b><?= $board->hits ?></b></small>
                   </div>
@@ -178,7 +171,6 @@
           <a href="{{url('board_write')}}" class="btn btn-primary">Write</a>
         @endif 
         </div>
-        
         <!-- /.row -->
       </div>
       <!-- /.col-lg-9 -->
@@ -186,4 +178,6 @@
     <!-- /.row -->
   </div>
 @endSection
+
+
 
