@@ -67,12 +67,16 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        \Mail::send('emails.auth.celebrate', compact('data'), function($message) use($data){
+            $message->to($data['email']);
+            $message->subject('환영합니다.');
+        });
 
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'addr' => $data['addr'],
-        ]);
+        ]); 
     }
 }

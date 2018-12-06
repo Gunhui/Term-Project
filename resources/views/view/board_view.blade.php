@@ -1,41 +1,34 @@
 @extends('layouts.master_view')
 
 @section('content')
-    <script type="text/javascript">
-        var es = new EventSource("<?php echo action('Controller@Action'); ?>");
-    
-        es.onmessage = function(e) {
-            console.log(e);
-        }
-      </script>
-
+   
     <div class="container">
         <h1>상세보기</h1>
         <div class="jumbotron" style="padding-bottom:10px;">
             <table class="table">
-                @foreach($contents as $content)
                 <tr>
-                    <th>Title</th>
-                    <td>{{ $content->content_title }}</td>
+                    <th><b>Title</b></th>
+                    <td>{{ $content['content_title'] }}</td>
                 </tr>
                 <tr>
-                    <th>작성자</th>
-                    <td>{{ $content->writer }}</td>
+                    <th><b>작성자</b></th>
+
+                    <td>{{ $content['writer'] }}</td>
                 </tr>
                 <tr>
-                    <th>작성일지</th>
-                    <td>{{ $content->created_at }}</td>
+                    <th><b>봉사일자</b></th>
+                    <td>{{ $content['execute_date'] }}</td>
                 </tr>
                 <tr>
-                    <th>조회수</th>
-                    <td>{{ $content->hits }}</td>
+                    <th><b>조회수</b></th>
+                    <td>{{ $content['hits'] }}</td>
                 </tr>
                 <tr>
-                    <th>내용</th>
-                    <td>{!! $content->content !!}</td>
+                    <th><b>내용</b></th>
+                    <td>{!! $content['content'] !!}</td>
                 </tr>
                 <tr>
-                    <th>장소</th>
+                    <th><b>장소</b></th>
                     <td>
                         <div id="map"></div>
                             <script>
@@ -44,14 +37,14 @@
                                 function initMap() {
                                     var map = new google.maps.Map(document.getElementById('map'), {
                                     zoom: 15,
-                                    center: {lat: <?= $content->lat ?>, lng: <?= $content->lng ?>}
+                                    center: {lat: <?= $content['lat'] ?>, lng: <?= $content['lng'] ?>}
                                     });
                             
                                     marker = new google.maps.Marker({
                                     map: map,
                                     draggable: true,
                                     animation: google.maps.Animation.DROP,
-                                    position: {lat: <?= $content->lat ?>, lng: <?= $content->lng ?>}
+                                    position: {lat: <?= $content['lat'] ?>, lng: <?= $content['lng'] ?>}
                                     });
                                     marker.addListener('click', toggleBounce);
                                 }
@@ -69,6 +62,21 @@
                         </script>
                     </td>
                 </tr>
+                <tr>
+                    <th><b>첨부파일</b></th>
+                    <td>
+                        <ul>
+                            @forelse($content->attachments as $attach)
+                                <li>
+                                    <a href="{{'/files/' . Auth::user()->id . '/' . $attach->filename}}">
+                                    {{$attach->filename}}
+                                    </a>
+                                </li>
+                            @empty <li>첨부파일 없음</li>	
+                            @endforelse	
+                        </ul>
+                    </td>
+                </tr>
             </table>
             <small id="apply"` style="font-size:13px;"><b>신청 현황 : {{ $count }}명</b></small>            
         </div>
@@ -80,12 +88,12 @@
             @endif
             <input type="button" class="btn btn-primary" onclick="location.href='/board/board'"  value="목록보기">
             @if(Auth::check())
-                @if(Auth::user()['master'] == 1 && $content->writer == Auth::user()['name'])
+                @if(Auth::user()['master'] == 1 || $content->writer == Auth::user()['name'])
                     <input type="button" class="btn btn-success" onclick="location.href='{{ URL::to('modify_form/'.$content->id) }}'" value="수정">
                     <input type="button" class="btn btn-danger" onclick="location.href='{{ URL::to('board_destroy/'.$content->id) }}'" value="삭제">
                 @endif
             @endif
         </div>
-        @endforeach
+        
     </div>
 @endSection

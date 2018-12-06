@@ -50,14 +50,14 @@ class Mypages_pageController extends Controller
     public function manage()
     {
         $user = Auth::user()['name'];
-        // $master = Auth::user()['master'];
+        $master = Auth::user()['master'];
 
         $users = DB::table('users')->get();
         $all_point = DB::table('donations')->sum('point');
         $my_point = DB::table('donations')->where('user_id', Auth::user()['name'])->sum('point');
         $point_list = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->get();
 
-        return view('board.mypage', ['point_list' => $point_list ,'my_point' => $my_point ,'all_point' => $all_point ,'users' => $users]);
+        return view('board.manage', ['master' => $master ,'point_list' => $point_list ,'my_point' => $my_point ,'all_point' => $all_point ,'users' => $users]);
     }
 
     /**

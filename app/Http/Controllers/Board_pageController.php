@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 use input;
@@ -30,6 +31,8 @@ class Board_pageController extends Controller
         $point_list = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->get();
         
         $all_point = DB::table('donations')->sum('point');
+
+        
 
         $my_point = DB::table('donations')->where('user_id', Auth::user()['name'])->sum('point');
         
@@ -66,8 +69,7 @@ class Board_pageController extends Controller
      */
     public function show($id)
     {
-        $target = Board::find($id);
-        $contents = DB::table('boards')->where('id', $id)->get();
+        $content = Board::find($id);
         $hit = DB::table('boards')->where('id', $id)->value('hits');
         $board = Board::find($id);
         $count = DB::table('board_applies')->where('applied_id', $id)->count();
@@ -85,9 +87,8 @@ class Board_pageController extends Controller
             $board->hits = $hit + 1;
             $board->save();
         }
-
-        return view('view.board_view')->with('target', $target)
-                                      ->with('contents', $contents)
+        
+        return view('view.board_view')->with('content', $content)
                                       ->with('count', $count);
     }
 
@@ -146,6 +147,16 @@ class Board_pageController extends Controller
         }else{
             return redirect()->route('board.board');
         }
+    }
+
+    public function search_ajax(Request $request){
+        $content = '%'.$request->content.'%';
+        $menu = $request->menu;
+
+        $result = Board::where($menu, 'like', $content)->value($menu);
+        json_encode($result);
+
+        return $result;
     }
 
 

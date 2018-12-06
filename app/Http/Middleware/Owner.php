@@ -16,9 +16,10 @@ class Owner
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::check()){
-            return $next($request);
-        }
-        return redirect()->route('board.board')->with('error', '로그인 이후 사용 가능합니다.');
+        // if(Auth::user()['name'] == )
+         
+        //     return $next($request);
+    
+        // return redirect()->route('board.board')->with('error', '로그인 이후 사용 가능합니다.');
     }
 }

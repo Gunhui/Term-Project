@@ -3,6 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Attachment;
+use App\User;
+
 
 class Board extends Model
 {
@@ -24,9 +27,18 @@ class Board extends Model
         $boards = App\Board::all();
     }
 
-    public function apply()
-    {
-        return $this->hasMany('App\Board_apply', 'apllied_id');
+    public function user() {
+
+    	return $this->belongsTo(User::class);
+
+    }
+
+
+
+    public function attachments() {
+
+    	return $this->hasMany(Attachment::class);
+
     }
     
   

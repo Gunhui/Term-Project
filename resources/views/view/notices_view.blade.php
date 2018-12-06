@@ -30,8 +30,10 @@
         </div>
         <div id="foot">
             <input type="button" class="btn btn-primary" onclick="location.href='{{ url('board/notices') }}'" value="목록보기">
-            <input type="button" class="btn btn-success" onclick="location.href='{{ URL::to('Notices_modify_form/'.$content->id) }}'" value="수정">
-            <input type="button" class="btn btn-danger" onclick="location.href='{{ URL::to('notices_destroy/'.$content->id) }}'" value="삭제">
+            @if(Auth::user()['master'] == 1 || Auth::user()['name'] == $content->writer)
+                <input type="button" class="btn btn-success" onclick="location.href='{{ URL::to('Notices_modify_form/'.$content->id) }}'" value="수정">
+                <input type="button" class="btn btn-danger" onclick="location.href='{{ URL::to('notices_destroy/'.$content->id) }}'" value="삭제">
+            @endif
         </div>
         @endforeach
     </div>

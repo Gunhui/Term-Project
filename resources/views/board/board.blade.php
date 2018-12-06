@@ -1,5 +1,11 @@
 @extends('layouts.master')
 
+@section('script')
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+@endSection
+
 @section('style')
   <style>
     #map {
@@ -147,18 +153,50 @@
                     <form action="{{ action('Board_pageController@search') }}" method="post"> 
                     @csrf
                     <div class="input-group stylish-input-group" style="display: flex;">
-                      <select name="menu" style="border-radius:5px;"> 
+                      <select name="menu" id="menu" style="border-radius:5px;"> 
                         <option value="content_title">제목</option>
                         <option value="content">내용</option>
                         <option value="writer">글쓴이</option>
                       </select>
-                      <input type="text" class="form-control" name="search_content" style="flex: 1;" placeholder="Enter any keyword">
+                      <input type="text" class="form-control" id="search_content" name="search_content" style="flex: 1;" placeholder="Enter any keyword">
                       <div class="input-group-addon" style="width: 60px">
                         <button type="submit">
                           <span class="glyphicon glyphicon-search"></span>
                         </button>  
                       </div>
                     </div>
+                    <script>
+                      $(function(){
+                        $('#search_content').autocomplete({
+                          source: function(request, response){
+                            $.ajax({
+                              type: 'post',
+                              url: '/search_ajax',
+                              dataType: "json",
+                              data: {
+                                'content' : $('#search_content').val(),
+                                'menu' : $('#menu').val(),
+                                _token : '{!! csrf_token() !!}',
+                              },
+                              success: function(data){
+                                response(
+                                  $.map(data, function(item){
+                                  return {
+                                    label: item.data,
+                                    value: item.data
+                                  }
+                                })
+                                );
+                              }
+                            });
+                          },
+                          minLength :2,
+                          select:function(event, ui){
+
+                          }
+                        })
+                      })
+                    </script>
                     </form>
                   </div>
                 </div>

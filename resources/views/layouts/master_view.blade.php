@@ -15,6 +15,7 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    @yield('css')
     <style>
         #apply{
             margin-left:950px;
@@ -39,10 +40,10 @@
             padding: 0;
         }
     </style>
-
     <title>Content</title>
 </head>
 <body>
     @yield('content')
+    @yield('script')
 </body>
 </html>

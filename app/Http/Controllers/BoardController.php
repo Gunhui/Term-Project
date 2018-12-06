@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Board;
 use Illuminate\Http\Request;
 use Validator;
+use App\Attachment;
 use Input;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -52,15 +53,33 @@ class BoardController extends Controller
      */
     public function store(Request $request)
     {
-        $response = Board::create([
-            'content_title' => $request->content_title,
-            'content' => $request->content,
-            'content_loc' => $request->content_loc,
-            'execute_date' => $request->execute_date,
-            'writer' => Auth::user()['name'],
-            'lat' => $request->lat,
-            'lng' => $request->lng,
-        ]);   
+        // $response = Board::create([
+        //     'content_title' => $request->content_title,
+        //     'content' => $request->content,
+        //     'content_loc' => $request->content_loc,
+        //     'execute_date' => $request->execute_date,
+        //     'writer' => Auth::user()['name'],
+        //     'lat' => $request->lat,
+        //     'lng' => $request->lng,
+        // ]);
+
+        $board = new Board();
+        $board->content_title = $request->content_title;
+        $board->content = $request->content;
+        $board->content_loc = $request->content_loc;
+        $board->execute_date = $request->execute_date;
+        $board->writer = Auth::user()['name'];
+        $board->lat = $request->lat;
+        $board->lng = $request->lng;
+        $board->save();
+        
+        if($request->has('attachments')){
+            foreach($request->attachments as $aid){
+                $attach = Attachment::find($aid);
+                $attach->board_id = $board->id;
+                $attach->save();
+            }
+        }
 
         return redirect()->route('board.board');
     }
@@ -100,13 +119,38 @@ class BoardController extends Controller
      */
     public function update(Request $request)
     {
-        $id = $request->id;
-        $board = Board::find($id);
-        $board->update([
-            'content_title' => $request->content_title,
-            'content' => $request->content,
-            'content_loc' => $request->content_loc,
-        ]);
+        $board = Board::find($request->id);
+        $board->content_title = $request->content_title;
+        $board->content = $request->content;
+        $board->content_loc = $request->content_loc;
+        $board->execute_date = $request->execute_date;
+        $board->lat = $request->lat;
+        $board->lng = $request->lng;
+        $board->save();
+
+        if($request->has('attachments')){
+            foreach($request->attachments as $aid){
+                $attach = Attachment::find($aid);
+                $attach->board_id = $board->id;
+                $attach->save();
+            }
+        }
+
+        if($request->has('del_attachments')) {
+			foreach($request->del_attachments as $did) {
+				$attach = Attachment::find($did);
+				$attach->deleteAttachedFile($attach->filename);
+				$attach->delete();
+			}
+		}  	
+
+        // $id = $request->id;
+        // $board = Board::find($id);
+        // $board->update([
+        //     'content_title' => $request->content_title,
+        //     'content' => $request->content,
+        //     'content_loc' => $request->content_loc,
+        // ]);
         return redirect()->route('board.board'); 
     }
 

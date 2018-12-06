@@ -20,7 +20,7 @@ class administrator
             if(Auth::user()['master'] != 1){
                 return $next($request);
             }else{
-                return redirect()->route('board.mypage');
+                return redirect()->route('board.manage');
             }
         }
         return redirect()->route('board.board');

@@ -61,7 +61,6 @@ class UsersController extends Controller
         \Mail::send('emails.auth.confirm', compact('request'), function($message) use($request){
             $message->to($request->mail);
             $message->subject('회원가입 확인');
-            
         });
 
         return $confirmCode;

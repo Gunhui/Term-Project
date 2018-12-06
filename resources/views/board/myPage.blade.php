@@ -21,8 +21,7 @@
 @endSection
 
 @section('content')
-<div class="col-lg-9">
-        
+    <div class="col-lg-9">
             @if($master == 1)
                 <br><br><br><br><br><br><br><br>
                 <h1><b>모든 회원정보 보기</b></h1>

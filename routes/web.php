@@ -15,7 +15,7 @@ Route::get('/', function(){
     return view('main');
 });
 
-Route::get('google_map', function(){
+Route::get('/google_map', function(){
     return view('form.google_map');
 });
 
@@ -62,3 +62,6 @@ Route::get('oauth', 'GoogleUserController@index');
 Route::post('/email', 'UsersController@email');
 Route::post('/check', 'UsersController@email_check');
 Route::post('/name_check', 'UsersController@name_check');
+Route::post('/search_ajax', 'Board_pageController@search_ajax');
+
+Route::resource('attachments', 'AttachmentsController', ['only' => ['store', 'destroy']]);
