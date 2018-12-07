@@ -150,15 +150,19 @@ class Board_pageController extends Controller
     }
 
     public function search_ajax(Request $request){
-        $content = '%'.$request->content.'%';
         $menu = $request->menu;
+        $content = $request->content;
 
-        $result = Board::where($menu, 'like', $content)->value($menu);
-        json_encode($result);
-
-        return $result;
+        if($content){
+            $data = Board::distinct()->where($menu, 'LIKE', '%'.$content.'%')->get([$menu]);
+            $output = '<ul class="dropdown-menu" style="display:block; position:relative">';
+            foreach($data as $row){
+                $output .= '<li><a href="#">'.$row->$menu.'</a></li>';
+            } 
+            $output .= '</ul>';
+            echo $output;
+        }
     }
-
 
     public function distance(Request $request)
     {

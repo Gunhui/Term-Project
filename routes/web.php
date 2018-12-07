@@ -62,6 +62,7 @@ Route::get('oauth', 'GoogleUserController@index');
 Route::post('/email', 'UsersController@email');
 Route::post('/check', 'UsersController@email_check');
 Route::post('/name_check', 'UsersController@name_check');
-Route::post('/search_ajax', 'Board_pageController@search_ajax');
+
+Route::post('/autocomplete', 'Board_pageController@search_ajax')->name('autocomplement');
 
 Route::resource('attachments', 'AttachmentsController', ['only' => ['store', 'destroy']]);

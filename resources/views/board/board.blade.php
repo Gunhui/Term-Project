@@ -1,9 +1,9 @@
 @extends('layouts.master')
 
 @section('script')
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <link href="http://demo.expertphp.in/css/jquery.ui.autocomplete.css" rel="stylesheet">
+  <script src="http://demo.expertphp.in/js/jquery.js"></script>
+  <script src="http://demo.expertphp.in/js/jquery-ui.min.js"></script>
 @endSection
 
 @section('style')
@@ -12,10 +12,18 @@
       height: 170px;
       weight: 70px;
     }
-    html, body {
+    h
+    tml, body {
       height: 100%;
       margin: 0;
       padding: 0;
+    }
+    .twitter-typeahead,
+    .tt-hint,
+    .tt-input,
+    .tt-menu{
+      width: auto ! important;
+      font-weight: normal;
     }
   </style>
 @endSection
@@ -152,13 +160,16 @@
                     <div id="imaginary_container">
                     <form action="{{ action('Board_pageController@search') }}" method="post"> 
                     @csrf
-                    <div class="input-group stylish-input-group" style="display: flex;">
-                      <select name="menu" id="menu" style="border-radius:5px;"> 
+                    <div class="input-group stylish-input-group" style="display: flex; height:34px;">
+                      <select name="menu" id="menu" style="border-radius:5px; "> 
                         <option value="content_title">제목</option>
                         <option value="content">내용</option>
                         <option value="writer">글쓴이</option>
                       </select>
-                      <input type="text" class="form-control" id="search_content" name="search_content" style="flex: 1;" placeholder="Enter any keyword">
+                      <div class="form-group">
+                      <input type="text" class="form-control" id="search_content" name="search_content" style="flex: 1; width:270px;" placeholder="Enter any keyword">
+                      <div id="list"></div>
+                      </div>
                       <div class="input-group-addon" style="width: 60px">
                         <button type="submit">
                           <span class="glyphicon glyphicon-search"></span>
@@ -166,36 +177,23 @@
                       </div>
                     </div>
                     <script>
-                      $(function(){
-                        $('#search_content').autocomplete({
-                          source: function(request, response){
+                      $(document).ready(function(){
+                        $('#search_content').keyup(function(){
                             $.ajax({
-                              type: 'post',
-                              url: '/search_ajax',
-                              dataType: "json",
-                              data: {
-                                'content' : $('#search_content').val(),
-                                'menu' : $('#menu').val(),
-                                _token : '{!! csrf_token() !!}',
+                              url: "{{ route('autocomplement') }}",
+                              method: "POST",
+                              data:{
+                                _token: '{!! csrf_token() !!}',
+                                menu: $('#menu').val(),
+                                content: $('#search_content').val()
                               },
                               success: function(data){
-                                response(
-                                  $.map(data, function(item){
-                                  return {
-                                    label: item.data,
-                                    value: item.data
-                                  }
-                                })
-                                );
+                                $('#list').fadeIn();
+                                $('#list').html(data);
                               }
-                            });
-                          },
-                          minLength :2,
-                          select:function(event, ui){
-
-                          }
-                        })
-                      })
+                            })
+                        });
+                      });
                     </script>
                     </form>
                   </div>
