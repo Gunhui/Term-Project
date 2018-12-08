@@ -53,16 +53,6 @@ class BoardController extends Controller
      */
     public function store(Request $request)
     {
-        // $response = Board::create([
-        //     'content_title' => $request->content_title,
-        //     'content' => $request->content,
-        //     'content_loc' => $request->content_loc,
-        //     'execute_date' => $request->execute_date,
-        //     'writer' => Auth::user()['name'],
-        //     'lat' => $request->lat,
-        //     'lng' => $request->lng,
-        // ]);
-
         $board = new Board();
         $board->content_title = $request->content_title;
         $board->content = $request->content;

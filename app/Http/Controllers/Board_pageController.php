@@ -28,7 +28,8 @@ class Board_pageController extends Controller
         
         // $boards = DB::table('boards')->where('execute_date', '>', \Carbon\Carbon::now())->orderBy('execute_date', 'desc')->paginate(6);
         $boards = DB::table('boards')->orderBy('execute_date', 'desc')->paginate(6);
-        $point_list = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->get();
+        $point_all = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->get();
+        $point_list = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->take(3)->get();
         
         $all_point = DB::table('donations')->sum('point');
 
@@ -36,7 +37,7 @@ class Board_pageController extends Controller
 
         $my_point = DB::table('donations')->where('user_id', Auth::user()['name'])->sum('point');
         
-        return view('board.board', ['point_list' => $point_list ,'user' => $user, 'master' => $master, 'img' => $img, 'boards' => $boards, 'check' => $check, 'all_point' => $all_point, 'my_point' => $my_point]);
+        return view('board.board', ['point_all' => $point_all, 'point_list' => $point_list ,'user' => $user, 'master' => $master, 'img' => $img, 'boards' => $boards, 'check' => $check, 'all_point' => $all_point, 'my_point' => $my_point]);
     }
     
     /**
@@ -83,11 +84,9 @@ class Board_pageController extends Controller
                'user_id' => Auth::user()['name'],
                 'num' => $id,
             ]);
-
             $board->hits = $hit + 1;
             $board->save();
         }
-        
         return view('view.board_view')->with('content', $content)
                                       ->with('count', $count);
     }
@@ -135,7 +134,7 @@ class Board_pageController extends Controller
         $check = 1;
         $column = $request->menu;
         $value = $request->search_content;
-        $contents = DB::table('boards')->where($column, $value)->paginate(6); 
+        $contents = DB::table('boards')->where($column, 'LIKE', '%'.$value.'%')->paginate(6); 
         $point_list = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->get();
         
         $all_point = DB::table('donations')->sum('point');
@@ -155,9 +154,12 @@ class Board_pageController extends Controller
 
         if($content){
             $data = Board::distinct()->where($menu, 'LIKE', '%'.$content.'%')->get([$menu]);
+            if(!Board::where($menu, 'LIKE', '%'.$content.'%')->value('id')){
+                return null;
+            }
             $output = '<ul class="dropdown-menu" style="display:block; position:relative">';
             foreach($data as $row){
-                $output .= '<li><a href="#">'.$row->$menu.'</a></li>';
+                $output .= '<li><a href="#" onclick="$(\'#search_content\').val(\''.$row->$menu.'\');return false;">'.$row->$menu.'</a></li>';
             } 
             $output .= '</ul>';
             echo $output;

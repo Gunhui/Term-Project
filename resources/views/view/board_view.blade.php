@@ -72,7 +72,7 @@
                                     {{$attach->filename}}
                                     </a>
                                 </li>
-                            @empty <li>첨부파일 없음</li>	
+                            @empty <li>첨부파일 없음</li>
                             @endforelse	
                         </ul>
                     </td>
@@ -83,7 +83,7 @@
         <div id="foot"style="padding-bottom:30px;">
             @if(Auth::check())
                 @if($content->writer != Auth::user()['name'])
-                    <input type="button" class="btn btn-light" style="position:absolute; left:400px;" value="Apply" onclick="location.href='{{ URL::to('Apply/'.$content->id) }}'">
+                    <input type="button" class="btn btn-light" style="position:absolute; left:200px;" value="Apply" onclick="location.href='{{ URL::to('Apply/'.$content->id) }}'">
                 @endif
             @endif
             <input type="button" class="btn btn-primary" onclick="location.href='/board/board'"  value="목록보기">

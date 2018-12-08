@@ -31,6 +31,7 @@
       },    
       success: function(file, response) {
           //alert(response.filename);
+            console.log(response);
           file.upload.id = response.id;
           $("<input>", {type:'hidden', name:'attachments[]', value:response.id}).appendTo($('#store'));
       },

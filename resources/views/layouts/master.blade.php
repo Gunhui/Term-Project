@@ -75,14 +75,14 @@
               <h4><span class="glyphicon glyphicon-chevron-right"></span> 내가 지금까지 기부한 Point  <span style="float:right"><b>{{ $my_point }}</b> Point</span></h4>
               <h4><span class="glyphicon glyphicon-chevron-right"></span> 기부금 순위</h4>
               <ol style="font-size:17px; margin-left:30px;">
-                <li>{{$point_list[0]->user_id}}  /   {{$point_list[0]->points}} Point</li>
-                <li>{{$point_list[1]->user_id}}  /   {{$point_list[1]->points}} Point</li>
-                <li>{{$point_list[2]->user_id}}  /   {{$point_list[2]->points}} Point</li>
+                @foreach($point_list as $point)
+                <li>{{$point->user_id}}  /   {{$point->points}} Point</li>
+                @endforeach
               </ol>
             @else
               <h4><span class="glyphicon glyphicon-chevron-right"></span> 기부금 목록</h4>
               <ol style="font-size:17px; margin-left:30px;">
-                @foreach($point_list as $pl)
+                @foreach($point_all as $pl)
                   <li>{{$pl->user_id}}  /   {{$pl->points}} Point</li>
                 @endforeach 
               </ol>

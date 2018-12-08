@@ -167,31 +167,31 @@
                         <option value="writer">글쓴이</option>
                       </select>
                       <div class="form-group">
-                      <input type="text" class="form-control" id="search_content" name="search_content" style="flex: 1; width:270px;" placeholder="Enter any keyword">
+                      <input type="text" autocomplete="off" class="form-control" id="search_content" name="search_content" style="flex: 1; width:270px;" placeholder="Enter any keyword">
                       <div id="list"></div>
                       </div>
                       <div class="input-group-addon" style="width: 60px">
-                        <button type="submit">
-                          <span class="glyphicon glyphicon-search"></span>
+                        <button type="submit" class="glyphicon glyphicon-search">
+                          
                         </button>  
                       </div>
                     </div>
                     <script>
                       $(document).ready(function(){
                         $('#search_content').keyup(function(){
-                            $.ajax({
-                              url: "{{ route('autocomplement') }}",
-                              method: "POST",
-                              data:{
-                                _token: '{!! csrf_token() !!}',
-                                menu: $('#menu').val(),
-                                content: $('#search_content').val()
-                              },
-                              success: function(data){
-                                $('#list').fadeIn();
-                                $('#list').html(data);
-                              }
-                            })
+                          $.ajax({
+                            url: "{{ route('autocomplement') }}",
+                            method: "POST",
+                            data:{
+                              _token: '{!! csrf_token() !!}',
+                              menu: $('#menu').val(),
+                              content: $('#search_content').val()
+                            },
+                            success: function(data){
+                              $('#list').fadeIn();
+                              $('#list').html(data);
+                            }
+                          })
                         });
                       });
                     </script>
@@ -200,7 +200,6 @@
                 </div>
             </div>
           </div>
-
         </div>
         <br>
         @if(Auth::check()) 

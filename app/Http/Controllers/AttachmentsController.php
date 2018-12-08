@@ -17,7 +17,7 @@ class AttachmentsController extends Controller
 
     public function store(Request $request) {
     	$attachment = null;
-    	\Log::debug('AttachmentsController store', ['stpe'=>1]);
+    	
     	if($request->hasFile('file')) {
     		$file = $request->file('file');
     		$filename = /*str_random().*/filter_var($file->getClientOriginalName(), FILTER_SANITIZE_URL);
@@ -36,7 +36,7 @@ class AttachmentsController extends Controller
     			];			
 			$attachment =  Attachment::create($payload);
     	}
-    	\Log::debug('AttachmentsController store', ['stpe'=>7]);
+    	
     	return response()->json($attachment, 200);
     }
 
@@ -46,12 +46,7 @@ class AttachmentsController extends Controller
         $attachment->deleteAttachedFile($filename);
         $attachment->delete();
         $user = \Auth::user();
-        /*
-        $path = public_path('files') . DIRECTORY_SEPARATOR .  $user->id . DIRECTORY_SEPARATOR . $filename;
-        if (file_exists($path)) {
-            unlink($path);
-        }
-        */
+        
         return $filename;  
     }
 }
