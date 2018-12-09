@@ -28,8 +28,9 @@ class Mypages_pageController extends Controller
         $notices = DB::table('notices')->where('writer', $user)->get();
         $applied = DB::table('board_applies')->where('user_id', $user)->get();
         $my_point = DB::table('donations')->where('user_id', Auth::user()['name'])->sum('point');
-        $point_list = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->get();
-
+        $point_all = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->get();
+        $point_list = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->take(3)->get();
+    
         $lists = array();
         $count = 0;
         
@@ -44,7 +45,7 @@ class Mypages_pageController extends Controller
             $notices = 'empty';
         }       
 
-        return view('board.mypage', ['point_list' => $point_list ,'my_point' => $my_point ,'all_point' => $all_point ,'master' => $master, 'users' => $users, 'contents' => $contents, 'notices' => $notices, 'lists' => $lists]);
+        return view('board.mypage', ['point_all' => $point_all, 'point_list' => $point_list ,'my_point' => $my_point ,'all_point' => $all_point ,'master' => $master, 'users' => $users, 'contents' => $contents, 'notices' => $notices, 'lists' => $lists]);
     }
 
     public function manage()
@@ -55,9 +56,10 @@ class Mypages_pageController extends Controller
         $users = DB::table('users')->get();
         $all_point = DB::table('donations')->sum('point');
         $my_point = DB::table('donations')->where('user_id', Auth::user()['name'])->sum('point');
-        $point_list = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->get();
+        $point_all = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->get();
+        $point_list = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->take(3)->get();
 
-        return view('board.manage', ['master' => $master ,'point_list' => $point_list ,'my_point' => $my_point ,'all_point' => $all_point ,'users' => $users]);
+        return view('board.manage', ['point_all' => $point_all, 'master' => $master ,'point_list' => $point_list ,'my_point' => $my_point ,'all_point' => $all_point ,'users' => $users]);
     }
 
     /**

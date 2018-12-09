@@ -24,9 +24,10 @@ class Notices_pageController extends Controller
         $notices = DB::table('notices')->orderBy('master',$order)->orderBy('created_at', 'desc')->paginate(7);  
         $my_point = DB::table('donations')->where('user_id', Auth::user()['name'])->sum('point');   
         $all_point = DB::table('donations')->sum('point');
-        $point_list = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->get();
+        $point_all = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->get();
+        $point_list = DB::table('donations')->select(DB::raw('user_id, sum(point) as points'))->groupBy('user_id')->orderBy('points', 'desc')->take(3)->get();
         
-        return view('board.notices', ['point_list' => $point_list ,'user' => $user, 'master' => $master, 'notices' => $notices, 'my_point' => $my_point, 'all_point' => $all_point]);
+        return view('board.notices', ['point_all' => $point_all, 'point_list' => $point_list ,'user' => $user, 'master' => $master, 'notices' => $notices, 'my_point' => $my_point, 'all_point' => $all_point]);
     }
 
     /**
